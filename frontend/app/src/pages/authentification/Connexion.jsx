@@ -1,12 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEnvelope } from "react-icons/fa";
 import { IoMdEye } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
 import signupIllustration from "../../assets/signup-illustration.jpg";
+import API from "../../api/api";
 
 export default function Connexion() {
+  const [email, setEmail] = useState("");
+  const [motDePasse, setMotDePasse] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await API.post("/api/connexion", {
+        email,
+        motDePasse,
+      });
+
+      alert("Connexion réussie !");
+      console.log(res.client);
+      navigate("/"); 
+    } catch (error) {
+      alert(error.message || "Erreur de connexion");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full flex relative">
 
@@ -47,12 +70,15 @@ export default function Connexion() {
             <div className="w-12 h-1 bg-[#00BCD4] rounded-full"></div>
           </div>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="relative">
               <input
                 type="email"
                 placeholder="Adresse E-mail"
                 className="w-full border-b border-gray-300 pl-10 py-2 focus:outline-none"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
               <FaEnvelope className="absolute right-2 top-2.5 text-gray-400" />
             </div>
@@ -61,6 +87,9 @@ export default function Connexion() {
                 type="password"
                 placeholder="Mot de passe"
                 className="w-full border-b border-gray-300 pl-10 py-2 focus:outline-none"
+                value={motDePasse}
+                onChange={(e) => setMotDePasse(e.target.value)}
+                required
               />
               <IoMdEye className="absolute right-2 top-2.5 text-gray-400" />
             </div>

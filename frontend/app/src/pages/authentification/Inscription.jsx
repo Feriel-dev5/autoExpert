@@ -1,13 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { IoMdEyeOff } from "react-icons/io";
 import signupIllustration from "../../assets/signup-illustration.jpg";
+import API from "../../api/api";
 
 export default function Inscription() {
+  const [nom, setNom] = useState("");
+  const [email, setEmail] = useState("");
+  const [telephone, setTelephone] = useState("");
+  const [motDePasse, setMotDePasse] = useState("");
+  const [confirmMotDePasse, setConfirmMotDePasse] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (motDePasse !== confirmMotDePasse) {
+      alert("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    try {
+      const res = await API.post("/api/inscription", {
+        nom,
+        email,
+        motDePasse,
+        telephone,
+        adresse: "",
+      });
+
+      alert("Inscription réussie !");
+      console.log(res);
+    } catch (error) {
+      console.error("Erreur :", error);
+      alert(error.message || "Erreur lors de l'inscription");
+    }
+  };
+
   return (
     <div className="min-h-screen w-full flex relative">
-
       <Link to="/" className="absolute top-6 left-6 z-50 text-3xl font-bold tracking-wide">
         <span className="text-white">L</span>
         <span className="text-[#F7941D]">o</span>
@@ -25,9 +56,9 @@ export default function Inscription() {
           <p className="mt-6 text-lg font-medium">Inscrivez - Vous</p>
           <p className="mt-2 text-sm">
             Vous avez déjà un compte Nom ?{" "}
-             <Link to="/connexion" className="text-yellow-400 font-semibold">
-    Se connecter
-  </Link>
+            <Link to="/connexion" className="text-yellow-400 font-semibold">
+              Se connecter
+            </Link>
           </p>
         </div>
       </div>
@@ -45,12 +76,15 @@ export default function Inscription() {
             <div className="w-12 h-1 bg-[#00BCD4] rounded-full"></div>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="relative">
               <input
                 type="text"
                 placeholder="Nom et Prénom"
                 className="w-full border-b border-gray-300 pl-8 py-2 focus:outline-none"
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
+                required
               />
               <FaUser className="absolute left-2 top-2.5 text-gray-400" />
             </div>
@@ -59,6 +93,9 @@ export default function Inscription() {
                 type="email"
                 placeholder="Adresse E-mail"
                 className="w-full border-b border-gray-300 pl-8 py-2 focus:outline-none"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
               <FaEnvelope className="absolute left-2 top-2.5 text-gray-400" />
             </div>
@@ -67,6 +104,8 @@ export default function Inscription() {
                 type="tel"
                 placeholder="+33   Numéro de téléphone"
                 className="w-full border-b border-gray-300 pl-8 py-2 focus:outline-none"
+                value={telephone}
+                onChange={(e) => setTelephone(e.target.value)}
               />
               <FaPhoneAlt className="absolute left-2 top-2.5 text-gray-400" />
             </div>
@@ -75,6 +114,9 @@ export default function Inscription() {
                 type="password"
                 placeholder="Mot de passe"
                 className="w-full border-b border-gray-300 pl-8 py-2 focus:outline-none"
+                value={motDePasse}
+                onChange={(e) => setMotDePasse(e.target.value)}
+                required
               />
               <IoMdEyeOff className="absolute right-2 top-2.5 text-gray-400" />
             </div>
@@ -83,13 +125,16 @@ export default function Inscription() {
                 type="password"
                 placeholder="Confirmer votre mot de passe"
                 className="w-full border-b border-gray-300 pl-8 py-2 focus:outline-none"
+                value={confirmMotDePasse}
+                onChange={(e) => setConfirmMotDePasse(e.target.value)}
+                required
               />
               <IoMdEyeOff className="absolute right-2 top-2.5 text-gray-400" />
             </div>
 
             <div className="text-xs text-gray-500">
               <label className="flex items-start gap-2">
-                <input type="checkbox" />
+                <input type="checkbox" required />
                 <span className="mt-1">
                   J’accepte les{" "}
                   <a href="#" className="text-cyan-500">

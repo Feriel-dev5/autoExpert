@@ -49,9 +49,22 @@ const inspectionSchema = new mongoose.Schema(
   { collection: "inspections" }
 );
 
+const adminSchema = new mongoose.Schema(
+  {
+    nom: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    motDePasse: { type: String, required: true },
+    role: { type: String, default: "admin" }, // tu peux personnaliser si besoin
+  },
+  { collection: "administrateurs" }
+);
+
+
 
 module.exports = {
   Clientcr: mongoose.model("Client", clientSchema),
   Inspecteurschm: mongoose.model("Inspecteur", inspecteurSchema),
   Inspection: mongoose.model("Inspection", inspectionSchema),
+  Admin: mongoose.model("Admin", adminSchema),
+
 };
